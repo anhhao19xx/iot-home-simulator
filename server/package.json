@@ -2,7 +2,7 @@
   "name": "iot-home-simulator",
   "version": "0.0.1",
   "scripts": {
-    "dev": "nodemon server/index.js"
+    "dev": "nodemon index.js"
   },
   "dependencies": {
     "socket.io": "^4.2.0"

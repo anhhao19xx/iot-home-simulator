@@ -1,6 +1,11 @@
 extends Node2D
 
 export var enabled = true
+export var id = ''
+
+var old_enabled = enabled
+
+signal on_change
 
 func update_status():
 	for node in get_children():
@@ -11,6 +16,10 @@ func update_status():
 			node.turn_on()
 		else:
 			node.turn_off()
+			
+	if old_enabled != enabled:
+		old_enabled = enabled
+		emit_signal("on_change")
 
 func _ready():
 	update_status()

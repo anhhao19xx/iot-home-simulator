@@ -67,6 +67,7 @@ script = ExtResource( 5 )
 __meta__ = {
 "_edit_group_": true
 }
+id = "living_room_light"
 
 [node name="Light" parent="Living Room" instance=ExtResource( 3 )]
 position = Vector2( 1.20251, -110.227 )
@@ -124,6 +125,7 @@ __meta__ = {
 shape = SubResource( 5 )
 
 [node name="Living Door" parent="." instance=ExtResource( 4 )]
+id = "living_room_door"
 
 [node name="Toilet Door" parent="." instance=ExtResource( 4 )]
 position = Vector2( 511.926, 336.669 )
@@ -134,6 +136,8 @@ position = Vector2( 623.697, 351.651 )
 
 [connection signal="input_event" from="Bedroom" to="Bedroom" method="_on_Room_Light_input_event"]
 [connection signal="input_event" from="Living Room" to="Living Room" method="_on_Room_Light_input_event"]
+[connection signal="on_change" from="Living Room" to="." method="on_change"]
 [connection signal="input_event" from="Dinning Room" to="Dinning Room" method="_on_Room_Light_input_event"]
 [connection signal="input_event" from="Kitchen" to="Kitchen" method="_on_Room_Light_input_event"]
 [connection signal="input_event" from="Toilet" to="Toilet" method="_on_Room_Light_input_event"]
+[connection signal="on_change" from="Living Door" to="." method="on_change"]

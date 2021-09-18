@@ -2,6 +2,7 @@ extends Node2D
 
 export var url = 'ws://127.0.0.1:5000'
 var ws = null
+var data = null
 
 func _ready():
 	_connect()
@@ -28,18 +29,59 @@ func _connection_error():
 func _process(_delta):
 	if ws.get_connection_status() == ws.CONNECTION_CONNECTING || ws.get_connection_status() == ws.CONNECTION_CONNECTED:
 		ws.poll()
+		
 	if ws.get_peer(1).is_connected_to_host():
 		if ws.get_peer(1).get_available_packet_count() > 0 :
-			var test = ws.get_peer(1).get_packet()
-			print('recieve %s' % test.get_string_from_ascii ())
+			print('Load data')
+			var text = ws.get_peer(1).get_packet().get_string_from_ascii()
+			data = JSON.parse(text).result
+			update_data()
 
-func _on_btn_ping_pressed():
-	var str_time = str(OS.get_unix_time())
-	print("send time : " + str_time)
+func get_item(id):
+	for item in data:
+		if item['id'] == id:
+			return item
+		
+	return null
 
+func update_data():
+	for node in get_children():
+		if not 'id' in node:
+			continue
+			
+		var item = get_item(node['id'])
+		
+		if not item:
+			continue
+			
+		if node.enabled == item['value']:
+			continue
+			
+		node.enabled = item['value']
+		node.update_status()
+
+
+func on_change():
 	if ws.get_peer(1).is_connected_to_host():
-		ws.get_peer(1).put_var(str_time)
-
-
-func _on_btn_connect_pressed():
-	_connect()
+		var is_update = false
+		
+		for node in get_children():
+			if not 'id' in node:
+				continue
+				
+			var item = get_item(node['id'])
+			
+			if not item:
+				continue
+				
+			if node.enabled == item['value']:
+				continue
+				
+			item['value'] = node.enabled
+			is_update = true
+		
+		if is_update:
+			print('Save data')
+			var text = JSON.print(data)
+			ws.get_peer(1).put_packet(text.to_utf8())
+			
