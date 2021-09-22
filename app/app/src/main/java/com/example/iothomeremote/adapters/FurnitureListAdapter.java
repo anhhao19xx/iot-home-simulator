@@ -15,9 +15,10 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import java.util.List;
 
 public class FurnitureListAdapter extends BaseAdapter {
-    private List<Furniture> listData;
     private LayoutInflater layoutInflater;
     private Context context;
+
+    public List<Furniture> listData;
 
     public FurnitureListAdapter(Context aContext,  List<Furniture> listData) {
         this.context = aContext;
