@@ -12,9 +12,8 @@ wss.on('connection', function connection(ws) {
   var socketAddr = ws._socket.remoteAddress.replace("::ffff:", "");
   console.log('Connection from ' + socketAddr + " - " + new Date())
 
-  console.log('Send init data');
+  console.log('Send init data', JSON.stringify(data));
   ws.send(JSON.stringify(data));
-
   
   ws.on('message', function incoming(message) {
     console.log('Received data');
@@ -34,8 +33,8 @@ wss.on('connection', function connection(ws) {
 
     let isChanged = false;
 
-    for (let item in newData){
-      for (let origin in data){
+    for (let item of newData){
+      for (let origin of data){
         if (origin.id != item.id)
           continue
 
@@ -49,8 +48,13 @@ wss.on('connection', function connection(ws) {
     }
 
     if (isChanged){
-      console.log('Send changed data');
-      ws.send(JSON.stringify(data));
+      console.log('Send changed data', JSON.stringify(data));
+
+      wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(data));
+        }
+      });
     }
   })
 })
