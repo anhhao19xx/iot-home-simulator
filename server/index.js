@@ -5,15 +5,22 @@ const wss = new WebSocket.Server({ port: PORT })
 
 const data = [
   { id: 'living_room_door', name: 'Door', group: 'Living room', type: 'enabled', value: false },
-  { id: 'living_room_light', name: 'Light', group: 'Living room', type: 'enabled', value: false }
+  { id: 'living_room_light', name: 'Light', group: 'Living room', type: 'enabled', value: false },
+  { id: 'bed_room_door', name: 'Door', group: 'Bed room', type: 'enabled', value: false },
+  { id: 'bed_room_light', name: 'Light', group: 'Bed room', type: 'enabled', value: false },
+  { id: 'toilet_door', name: 'Door', group: 'Toilet', type: 'enabled', value: false },
+  { id: 'toilet_light', name: 'Light', group: 'Toilet', type: 'enabled', value: false },
+  { id: 'dinning_room_light', name: 'Light', group: 'Dinning room', type: 'enabled', value: false },
+  { id: 'kitchen_room_light', name: 'Light', group: 'Kitchen', type: 'enabled', value: false },
 ]
 
 wss.on('connection', function connection(ws) {
   var socketAddr = ws._socket.remoteAddress.replace("::ffff:", "");
   console.log('Connection from ' + socketAddr + " - " + new Date())
 
-  console.log('Send init data', JSON.stringify(data));
+  console.log('Send init data');
   ws.send(JSON.stringify(data));
+  console.table(data);
   
   ws.on('message', function incoming(message) {
     console.log('Received data');
@@ -48,7 +55,8 @@ wss.on('connection', function connection(ws) {
     }
 
     if (isChanged){
-      console.log('Send changed data', JSON.stringify(data));
+      console.log('Send changed data');
+      console.table(data);
 
       wss.clients.forEach(function each(client) {
         if (client.readyState === WebSocket.OPEN) {
