@@ -3,6 +3,7 @@ extends Node2D
 export var url = 'ws://127.0.0.1:5000'
 var ws = null
 var data = null
+var is_init = false
 
 func _ready():
 	_connect()
@@ -59,9 +60,14 @@ func update_data():
 			
 		node.enabled = item['value']
 		node.update_status()
+		
+	is_init = true
 
 
 func on_change():
+	if ws == null or not is_init:
+		return
+		
 	if ws.get_peer(1).is_connected_to_host():
 		var is_update = false
 		
